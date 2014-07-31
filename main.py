@@ -1,14 +1,15 @@
 from kivy.app import App
 from kivy.properties import StringProperty
-import fonts_ja
 
 from os.path import join, dirname
+from os import environ
 import gettext
-import os
+
+import fonts_ja
 
 '''
-To set the language you need to set one of:
-export CHILD_FIRST_LANG='fr'
+To set the language you need to set one of one enviroment variables:
+export CHILD_FIRST_LANG='fr' 
 export CHILD_FIRST_LANG='ja'
 export CHILD_FIRST_LANG='en'
 '''
@@ -19,21 +20,22 @@ class _(str):
     def __new__(cls, s, *args, **kwargs):
         if _.lang is None:
             try:
-                _.switch_lang(os.environ['CHILD_FIRST_LANG'])
+                _.switch_lang(environ['CHILD_FIRST_LANG'])
             except KeyError:
                 _.switch_lang('en')
         s = _.translate(s, *args, **kwargs)
         return s
-        # The original call, which somehow broke things
-        return super(_, cls).__new__(cls, s)
+        # The original call, which cannot deal with unicode
+        # return super(_, cls).__new__(cls, s)
 
     @staticmethod
     def translate(s, *args, **kwargs):
-        a = _.lang(s).format(args, kwargs)
-        return a
+        return _.lang(s).format(args, kwargs)
+
     @staticmethod
     def bind(**kwargs):
         _.observers.append(kwargs['_'])
+
     @staticmethod
     def switch_lang(lang):
         # get the right locales directory, and instanciate a gettext
@@ -48,11 +50,9 @@ class _(str):
 class LangApp(App):
 
     lang = StringProperty('en')
-
     def on_lang(self, instance, lang):
-        os.environ['CHILD_FIRST_LANG'] = lang
+        environ['CHILD_FIRST_LANG'] = lang
         _.switch_lang(lang)
         
-
 
 LangApp().run()
