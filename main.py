@@ -6,9 +6,13 @@ from os.path import join, dirname
 import gettext
 import os
 
-# To set the language you need to set
-#export CHILD_FIRST_LANG='fr'
-__file__='/Users/jerome/Downloads/kivy-gettext-example-master-2/main.py'
+'''
+To set the language you need to set one of:
+export CHILD_FIRST_LANG='fr'
+export CHILD_FIRST_LANG='ja'
+export CHILD_FIRST_LANG='en'
+'''
+
 class _(str):
     observers = []
     lang = None
@@ -18,17 +22,14 @@ class _(str):
                 _.switch_lang(os.environ['CHILD_FIRST_LANG'])
             except KeyError:
                 _.switch_lang('en')
-        print("s is", s)
         s = _.translate(s, *args, **kwargs)
-        print(s)
         return s
+        # The original call, which somehow broke things
         return super(_, cls).__new__(cls, s)
 
     @staticmethod
     def translate(s, *args, **kwargs):
-        print(s, args, kwargs)
         a = _.lang(s).format(args, kwargs)
-        print("a is fine")
         return a
     @staticmethod
     def bind(**kwargs):
@@ -43,8 +44,6 @@ class _(str):
         # update all the kv rules attached to this text
         for callback in _.observers:
             callback()
-
-_(u"Hello World")
 
 class LangApp(App):
 
