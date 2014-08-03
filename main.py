@@ -1,15 +1,15 @@
 from kivy.app import App
-from kivy.properties import StringProperty
-from kivy.uix.boxlayout import BoxLayout
+
 from os.path import join, dirname
 from os import environ
+
 import gettext
 
 import fonts_ja
 
 '''
 To set the language you need to set one of one enviroment variables:
-export CHILD_FIRST_LANG='fr' 
+export CHILD_FIRST_LANG='fr'
 export CHILD_FIRST_LANG='ja'
 export CHILD_FIRST_LANG='en'
 '''
@@ -40,12 +40,6 @@ class _(str):
 
 
 class LangApp(App):
-
-    lang = StringProperty('en')
-
-    def on_lang(self, instance, lang):
-        environ['CHILD_FIRST_LANG'] = lang
-        _.switch_lang(lang)
-
+    pass
 
 LangApp().run()
